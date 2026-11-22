@@ -2,15 +2,18 @@
 
 **Accompanying manuscript:** *A Multi-Branch Knowledge Graph for LLM-Enhanced Reasoning: Application to Ore-Genesis Questions with Multiple Interpretations*
 
-## 1. Purpose and scope
+## 1. Overview and Scope
 
-This archive is provided as **supplementary source code and a runnable synthetic example for editorial and peer review**. It contains selected historical scripts for knowledge-graph construction, model inference and evaluation, together with a deliberately small fictional graph that enables reviewers to inspect the expected data structure and run independent checks without a GPU or private research materials.
+This repository provides supplementary source code and a self-contained synthetic example to support editorial and peer review of the accompanying manuscript. It enables reviewers to:
 
-**Important scope distinction:** This is **not** the full original research knowledge graph, the complete training/evaluation corpus, or an end-to-end reproduction of the manuscript's quantitative results. Some included scripts document historical stages and require study-specific private inputs, checkpoints or configuration that are not supplied. The sample graph is invented for testing; it must not be presented as an actual geological dataset or independent evidence supporting the paper's conclusions.
+- Inspect graph-construction, LLM-inference, and evaluation scripts related to the study.
+- Verify the graph schema, structural invariants, and Flat-KG vs. Multi-KG prompt-parity pipeline locally on a standard CPU without external dependencies or restricted data.
 
-## 2. Quick start: tested, no GPU or downloads required
+**Scope note:** To respect third-party publication copyrights and data-access restrictions, this repository does not include the full curated research knowledge graph, source literature corpus, restricted annotations, model weights, or frozen experimental outputs. Consequently, the bundled synthetic example is intended for code and schema verification rather than end-to-end reproduction of the manuscript's quantitative results. Full details are documented in [`DATA_AVAILABILITY_STATEMENT.txt`](DATA_AVAILABILITY_STATEMENT.txt).
 
-Open a terminal in the extracted `MultiKG_Peer_Review_Materials` directory. Install **Python 3.10 or newer**; the following commands use only the Python standard library:
+## 2. Quick Start (CPU-Only, Standard Library)
+
+From the **root directory of this GitHub repository**, run the verification workflow using **Python 3.10 or newer** (standard library only; no GPU or model downloads required):
 
 ```bash
 python3 examples/synthetic_graph/verify_example.py --expected-nodes 28 --expected-edges 35
@@ -18,66 +21,67 @@ python3 examples/synthetic_graph/make_llm_inputs.py --output-dir ./example_outpu
 python3 demo/smoke_test.py
 ```
 
-Expected results:
+**Expected outcomes:**
 
-- The graph validator reports `PASSED`, 28 nodes, 35 edges, and zero dangling relations.
-- The input builder reports three example cases and `flat_multi_atom_parity: EXACT` for each, and creates `flat_kg.jsonl`, `multibranch_kg.jsonl`, and `parity_audit.json` in `example_outputs/graph_inputs/`.
-- The CPU smoke test reports `PASS` for building and validating another fictional small graph, preparing prompt records, and checking a synthetic model-output record.
+- `verify_example.py` reports `PASSED` with 28 nodes, 35 edges, and zero dangling relations.
+- `make_llm_inputs.py` processes three synthetic cases, reports exact atom parity between Flat-KG and Multi-KG inputs for each case, and writes `flat_kg.jsonl`, `multibranch_kg.jsonl`, and `parity_audit.json` to `./example_outputs/graph_inputs/`.
+- `demo/smoke_test.py` reports `PASS` after building and validating an additional small synthetic graph, generating paired prompt records, and validating a synthetic model-output record.
 
-To inspect the paired input records after generation:
+To inspect the parity audit output:
 
 ```bash
 python3 -m json.tool ./example_outputs/graph_inputs/parity_audit.json
 ```
 
-There is also an independent demonstration of Flat-KG and Multi-KG input formatting:
+An independent demonstration of Flat-KG and Multi-KG input formatting can also be run via:
 
 ```bash
 python3 demo/build_synthetic_llm_inputs.py --output-dir ./example_outputs/format_example
 ```
 
-These commands do **not** execute actual Qwen inference or reproduce manuscript performance estimates. See `EXAMPLE_VALIDATION_REPORT.json` for a test log prepared with this archive.
+These checks exercise the data pipeline without invoking Qwen inference. The results of checks on the bundled example are recorded in `EXAMPLE_VALIDATION_REPORT.json`.
 
-## 3. The provided example graph
+## 3. Synthetic Example Graph
 
-The `examples/synthetic_graph/` folder contains:
+The `examples/synthetic_graph/` directory provides a miniature fictional dataset following the study's 12-column graph schema:
 
 | File | Description |
 | --- | --- |
-| `nodes.csv` | 28 fictional nodes using the 12-column legacy graph node format. |
-| `edges.csv` | 35 fictional directed relations using the 12-column legacy edge format. |
-| `cases.jsonl` | Three fictional ore-genesis-style question records. |
-| `verify_example.py` | Checks schema, unique node IDs, relation endpoints/directions and expected counts. |
-| `make_llm_inputs.py` | Converts identical claim/evidence atoms to Flat-KG and branch-grouped Multi-KG prompt records. |
+| `nodes.csv` | 28 synthetic nodes in the 12-column node format. |
+| `edges.csv` | 35 synthetic directed relations in the 12-column edge format. |
+| `cases.jsonl` | Three synthetic ore-genesis-style question records. |
+| `verify_example.py` | Validates schema integrity, unique node IDs, relation endpoints/directions, and expected counts. |
+| `make_llm_inputs.py` | Converts identical claim/evidence atoms into Flat-KG and branch-grouped Multi-KG prompt records. |
 
-The example contains three `HYPOTHESIS_FAMILY` nodes and six `HYPOTHESIS_BRANCH` nodes. Other node types include `PAPER`, `DEPOSIT`, `CLAIM` and `EVIDENCE`. Relations include `STUDIES`, `ASSERTS`, `REPORTS`, `HAS_BRANCH`, `CENTRAL_CLAIM`, `SUPPORTS`, `OPPOSES` and `QUALIFIES`.
+The synthetic graph includes three `HYPOTHESIS_FAMILY` nodes and six `HYPOTHESIS_BRANCH` nodes, alongside `PAPER`, `DEPOSIT`, `CLAIM`, and `EVIDENCE` nodes connected via `STUDIES`, `ASSERTS`, `REPORTS`, `HAS_BRANCH`, `CENTRAL_CLAIM`, `SUPPORTS`, `OPPOSES`, and `QUALIFIES`.
 
-In the example, `OPPOSES` represents an **evidence-to-claim** relationship. It is **not** a manually confirmed branch-to-branch competition label; branch competition remains `UNRESOLVED`. The Flat-KG and Multi-KG prompts contain the same claim/evidence content, with different grouping/presentation only. This miniature example does not reimplement the full retrieval or scientific adjudication workflow.
+**Schema semantics:** In this example, `OPPOSES` encodes an **evidence-to-claim** relation rather than an expert-confirmed branch-to-branch competition label; branch-level competition status remains `UNRESOLVED`. The generated Flat-KG and Multi-KG prompts contain identical claim/evidence atoms and differ in their structural grouping. This lightweight example illustrates the representation and formatting logic rather than the full retrieval or scientific adjudication workflow.
 
-## 4. Guide to source files
+## 4. Repository Structure
 
-| Location | Function / constraints |
+| Path | Description and Execution Notes |
 | --- | --- |
-| `src/legacy_kg/build_multibranch_kg.py` | Builds a legacy claim/evidence graph with exact-text candidate grouping; does not infer expert-confirmed competing interpretations. |
-| `src/legacy_kg/validate_kg_v1.py` | Checks structural and relation invariants of the legacy graph. |
-| `src/legacy_kg/prepare_existing_structured_candidates.py` | Prepares structured candidate records; real runs require restricted study inputs. |
-| `src/legacy_kg/infer_3seed_ensemble.py` | Historical multi-seed relation prediction; requires checkpoints and non-included inputs. |
-| `src/llm/run_hf.py`, `src/llm/run_all_hf.py` | Hugging Face inference scripts for one or four experimental conditions; original frozen inputs and model weights are not bundled. |
-| `src/evaluation/` | Output JSON checks, structural scoring, token accounting and preparation of blinded evaluation packages. These do not independently establish expert judgment accuracy. |
-| `src/cm/` | Historical AX-related multi-interpretation input and paired-analysis scripts. Their AX IDs have not been independently mapped to the paper's CM IDs. |
-| `demo/` | Runnable synthetic build/validation and input-formatting demonstrations. |
-| `configs/` | Historical configuration/requirements examples. |
-| `PROVENANCE.csv` | Maps selected source scripts to historical locations, checksums and documented reviewer-copy modifications. |
-| `EXAMPLE_VALIDATION_REPORT.json` | Record of validation performed on this self-contained example. |
-| `DATA_AVAILABILITY_STATEMENT.txt` | Boundaries and restrictions of the materials supplied for peer review. |
+| `src/legacy_kg/build_multibranch_kg.py` | Constructs the claim/evidence graph using exact-text candidate grouping (does not infer expert-confirmed competing interpretations). |
+| `src/legacy_kg/validate_kg_v1.py` | Checks structural and relational invariants of the graph schema. |
+| `src/legacy_kg/prepare_existing_structured_candidates.py` | Prepares structured candidate records; execution on full data requires restricted study inputs. |
+| `src/legacy_kg/infer_3seed_ensemble.py` | Multi-seed relation prediction script; requires trained checkpoints and study inputs not bundled here. |
+| `src/llm/run_hf.py`, `src/llm/run_all_hf.py` | Hugging Face inference scripts for single-condition or four-condition runs; full runs require local model weights and original frozen inputs. |
+| `src/evaluation/` | Utilities for output JSON validation, structural scoring, token accounting, and blinded evaluation-package assembly (separate from human expert accuracy assessment). |
+| `src/cm/` | Multi-interpretation input and paired-analysis scripts provided for methodological inspection. |
+| `demo/` | Standalone synthetic graph construction, validation, and prompt-formatting demos. |
+| `configs/` | Reference configuration files and dependency specifications from the study workflow. |
+| `PROVENANCE.csv` | Maps archived scripts to original source locations, checksums, and peer-review sanitization changes. |
+| `EXAMPLE_VALIDATION_REPORT.json` | Validation record for the self-contained synthetic example. |
+| `DATA_AVAILABILITY_STATEMENT.txt` | Summary of material scope and access conditions. |
 
-The `src/legacy_kg/` copies include a safety change: confidential held-out paper identifiers are not embedded. Running those scripts with **real, non-demo study data** requires a separately provided authorized `MULTIKG_LOCKED_PAPER_IDS` environment setting. The scripts fail closed when that setting is required but absent. The actual identifiers are not in this archive. See `PROVENANCE.csv` for the historical source and edited-copy hashes.
+**Notes on archived study scripts:**
 
-Some historical `src/cm/` scripts still assume server-specific paths. They are supplied for methodological inspection, **not** guaranteed runnable on a reviewer's computer with no original data. Do not run them against study directories or existing frozen outputs; they may create or overwrite artifacts.
+- **Confidential paper ID redaction (`src/legacy_kg/`):** Confidential held-out paper identifiers have been removed from the shared copies. Running these scripts on real, non-demo study datasets requires an authorized `MULTIKG_LOCKED_PAPER_IDS` environment variable; scripts fail closed when that variable is required but unset. Checksums and edit records are logged in `PROVENANCE.csv`.
+- **Methodological reference scripts (`src/cm/`):** These scripts retain internal `AX` case identifiers (not cross-mapped to manuscript `CM` IDs in this repository) and environment-specific paths from the original compute server. They are included for code inspection rather than direct local execution.
 
-## 5. Optional model inference (not needed for the smoke test)
+## 5. Optional Local LLM Inference
 
-`requirements.txt` has no mandatory third-party dependencies for the synthetic workflow. `requirements-llm.txt` lists indicative, **not fully pinned or independently environment-verified**, packages for optional Hugging Face inference. A compatible model and local compute resources are needed. For illustration only, after running the Quick start:
+The Quick Start workflow requires no third-party packages (`requirements.txt`). For reviewers who wish to test the Hugging Face inference interface locally on synthetic prompts, `requirements-llm.txt` lists indicative (unpinned) dependencies. Running inference requires a compatible local model and appropriate hardware:
 
 ```bash
 python3 -m pip install -r requirements-llm.txt
@@ -88,14 +92,14 @@ python3 src/llm/run_hf.py \
   --max-new-tokens 900 --temperature 0 --seed 20260808
 ```
 
-This optional command has **not** been validated as a faithful reconstruction of the manuscript's generation experiments.
+This command illustrates the inference interface on synthetic inputs rather than replicating the manuscript's full experimental runs. The historical script may load third-party model code; reviewers should use a trusted checkpoint.
 
-## 6. Data and interpretation limitations
+## 6. Data Availability and Limitations
 
-The full curated original graph, scientific text extracted from third-party publications, restricted claim/evidence annotations, original H/CM question sets, expert evaluation labels, frozen model outputs and model weights are **not included** in this peer-review ZIP. Consequently the example cannot reconstruct the full graph or verify the manuscript's reported graph statistics and performance metrics. Reviewers should distinguish the schema/functionality demonstration from the research evidence itself.
+The following study artifacts are not distributed in this repository due to third-party publication copyrights and data-access restrictions: the full curated knowledge graph, scientific text extracted from published papers, restricted claim/evidence annotations, original H/CM question sets, expert evaluation labels, frozen model outputs, and model weights. Accordingly, this package supports inspection of the methodological pipeline and schema behavior, rather than independent verification of the manuscript's aggregate graph statistics or empirical performance metrics.
 
-Consult `DATA_AVAILABILITY_STATEMENT.txt` for the precise supply scope. Any request for restricted original materials or for verification of numerical findings should be handled through the authors and journal's editorial process; availability is not promised by this archive.
+Please consult [`DATA_AVAILABILITY_STATEMENT.txt`](DATA_AVAILABILITY_STATEMENT.txt) for details. Inquiries regarding restricted materials or verification of numerical results may be directed to the corresponding author via the journal's editorial office.
 
-## 7. Access and permissions
+## 7. Code Availability and Licensing
 
-This copy is supplied for assessment in connection with the manuscript. **No public open-source license is asserted or included**, and the archive does not grant public redistribution or reuse rights. It should not be described as a public repository deposit. Any public source release, license and persistent archive are separate decisions requiring rightsholder and journal approval. The contents are not claimed to satisfy any particular journal's full code/data-deposition policy by themselves.
+This repository is publicly accessible to support editorial review and methodological inspection. An open-source license has not yet been confirmed by the relevant code rightsholders. Public visibility does not by itself grant permission to copy, modify, or redistribute the software. Licensing information will be updated following the necessary author and institutional approvals. Restricted research data are not released under any software license associated with this repository.
