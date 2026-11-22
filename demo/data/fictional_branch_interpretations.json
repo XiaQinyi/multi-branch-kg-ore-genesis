@@ -1,0 +1,24 @@
+{
+  "question_id": "DEMO-Q01",
+  "question": "For the fictional sample valley, what imaginary formation mechanisms have been proposed?",
+  "status": "SYNTHETIC_HAND_CURATED_ILLUSTRATION_NOT_PAPER_RESULT",
+  "interpretations": [
+    {
+      "id": "DEMO-BRANCH-A",
+      "summary": "Fractional-crystallization interpretation",
+      "claim": "An imaginary mineral body formed mainly by fractional crystallization.",
+      "evidence_id": "S01",
+      "evidence": "Invented crystal zoning is reported for this imaginary body.",
+      "paper": "Fictional Article A"
+    },
+    {
+      "id": "DEMO-BRANCH-B",
+      "summary": "Fluid-assisted replacement interpretation",
+      "claim": "An imaginary mineral body formed mainly through fluid-assisted replacement.",
+      "evidence_id": "S02",
+      "evidence": "Invented replacement textures are reported for this imaginary body.",
+      "paper": "Fictional Article B"
+    }
+  ],
+  "relation": "COMPETING (synthetic example only; human-curated for demonstration)"
+}

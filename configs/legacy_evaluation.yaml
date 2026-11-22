@@ -1,0 +1,8 @@
+span_exact: true
+span_relaxed_iou_threshold: 0.5
+relation_gold_span: true
+end_to_end_strict: true
+end_to_end_relaxed_iou_threshold: 0.5
+report_by_label: true
+span_length_bins: [0,32,64,128,256,100000]
+pair_token_cover_bins: [0,64,128,256,480,100000]

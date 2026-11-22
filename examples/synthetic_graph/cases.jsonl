@@ -1,0 +1,3 @@
+{"case_id": "DEMO_A", "synthetic": true, "demonstration_topic": "示例 A：假想锂伟晶岩矿田", "hypothesis_count": 2, "evidence_count": 2, "interpretation_relation": "UNRESOLVED"}
+{"case_id": "DEMO_B", "synthetic": true, "demonstration_topic": "示例 B：假想 Nb–Ta 花岗岩矿床", "hypothesis_count": 2, "evidence_count": 3, "interpretation_relation": "UNRESOLVED"}
+{"case_id": "DEMO_C", "synthetic": true, "demonstration_topic": "示例 C：假想花岗岩暗色包体", "hypothesis_count": 2, "evidence_count": 2, "interpretation_relation": "UNRESOLVED"}

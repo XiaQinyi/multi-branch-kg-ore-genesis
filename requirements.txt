@@ -1,0 +1,2 @@
+# Minimal synthetic demonstration uses only Python standard library.
+# Install requirements-llm.txt only if you intend to run LLM inference.

@@ -1,0 +1,41 @@
+{
+  "scope": "Peer-review supplementary code and fictional example; not complete manuscript reproducibility",
+  "python_runtime": "3.13.5",
+  "synthetic_graph": {
+    "nodes": 28,
+    "edges": 35,
+    "cases": 3,
+    "branches": 6,
+    "source": "fictional, not original publication data"
+  },
+  "checks": [
+    {
+      "name": "graph schema and topology verification",
+      "result": "PASSED",
+      "command": "python3 examples/synthetic_graph/verify_example.py --expected-nodes 28 --expected-edges 35"
+    },
+    {
+      "name": "Flat-KG and Multi-KG input builder; per-case atom parity",
+      "result": "PASSED",
+      "command": "python3 examples/synthetic_graph/make_llm_inputs.py --output-dir ./example_outputs/graph_inputs",
+      "cases_checked": 3,
+      "parity": "EXACT"
+    },
+    {
+      "name": "CPU synthetic build/validation smoke test",
+      "result": "PASSED",
+      "command": "python3 demo/smoke_test.py"
+    },
+    {
+      "name": "Separate input-format example",
+      "result": "PASSED",
+      "command": "python3 demo/build_synthetic_llm_inputs.py --output-dir ./example_outputs/format_example"
+    },
+    {
+      "name": "Syntax compilation of all Python scripts",
+      "result": "PASSED"
+    }
+  ],
+  "not_tested": "Full original scientific graph reconstruction, Hugging Face inference, complete paper metrics or human adjudication",
+  "licensing": "Reviewer access only; public license not authorized"
+}

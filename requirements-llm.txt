@@ -1,0 +1,9 @@
+# Optional GPU / LLM scripts; versions reflect the supplied legacy environment constraints.
+# These are not a verified complete lockfile.
+torch>=2.5
+transformers>=4.46,<5
+accelerate>=1.0
+numpy>=1.26
+scikit-learn>=1.5
+tqdm>=4.66
+pyyaml>=6.0

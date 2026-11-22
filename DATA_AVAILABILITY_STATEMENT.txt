@@ -1,0 +1,7 @@
+Code and Data Supplied for Peer Review
+
+This supplementary ZIP provides selected research source scripts and a small, fully synthetic knowledge graph with executable Python standard-library tests and example Flat-KG/Multi-KG input formatting. The example consists of invented nodes, relationships and questions. It is useful for reviewing the data interfaces and portions of the code workflow but is not drawn from the original geological publication corpus.
+
+The original curated ore-genesis knowledge graph, the full source-paper extracts, associated confidential curation/interpretation records, original H/CM benchmark data, frozen study outputs, human assessment records and model weights are not included. Accordingly this peer-review attachment cannot by itself rebuild the complete reported graph or reproduce the quantitative results in the manuscript. The original data are restricted and their redistribution rights have not been established for all components.
+
+Access to any restricted material, if considered necessary for peer review, must be discussed with the authors through the editorial process and remains subject to rights and confidentiality constraints; no access commitment is implied. A final manuscript Data Availability Statement and any public software license/repository information should reflect whatever sharing and permissions are actually approved. This ZIP does not constitute an open-source license or public data release.
