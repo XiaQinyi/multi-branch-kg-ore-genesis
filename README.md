@@ -100,6 +100,8 @@ The following study artifacts are not distributed in this repository due to thir
 
 Please consult [`DATA_AVAILABILITY_STATEMENT.txt`](DATA_AVAILABILITY_STATEMENT.txt) for details. Inquiries regarding restricted materials or verification of numerical results may be directed to the corresponding author via the journal's editorial office.
 
-## 7. Code Availability and Licensing
+## 7. Code Availability and License
 
-This repository is publicly accessible to support editorial review and methodological inspection. An open-source license has not yet been confirmed by the relevant code rightsholders. Public visibility does not by itself grant permission to copy, modify, or redistribute the software. Licensing information will be updated following the necessary author and institutional approvals. Restricted research data are not released under any software license associated with this repository.
+The source code in this repository is publicly available under the MIT License. See the LICENSE file for details.
+
+The synthetic example is provided for demonstration and structural verification. The original research knowledge graph, third-party literature corpus, and restricted evaluation materials are not included in this repository.
